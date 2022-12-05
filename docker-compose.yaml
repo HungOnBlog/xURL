@@ -1,0 +1,39 @@
+version: "3.7"
+services:
+  db:
+    image: postgres:15
+    volumes:
+      - ~/data/xurl/db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "3999:5432"
+  cache:
+    image: redis:7.0.5
+    volumes:
+      - ~/data/xurl/cache:/data
+    ports:
+      - "6379:6379"
+  app:
+    image: hungtpplay/xurl:latest
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=postgres
+      - 3999=postgres://postgres:postgres@db:5432/postgres?schema=public
+      - CACHE_HOST=cache
+      - CACHE_PORT=6379
+      - APP_PORT=3111
+      - PREFORK=false
+    ports:
+      - "3111:3111"
+    volumes:
+      - .:/app
+    command: ["/bin/bash", "-c", "go run main.go"]
+    depends_on:
+      - db
+      - cache
