@@ -24,6 +24,7 @@ services:
       - DB_USER=postgres
       - DB_PASSWORD=postgres
       - DB_NAME=postgres
+      - DB_SSL=disable
       - 3999=postgres://postgres:postgres@db:5432/postgres?schema=public
       - CACHE_HOST=cache
       - CACHE_PORT=6379
