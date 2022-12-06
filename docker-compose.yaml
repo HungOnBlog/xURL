@@ -31,10 +31,12 @@ services:
       - APP_PORT=3111
       - PREFORK=false
       - BASE_URL=http://localhost:3111
+      - LOG_PATH=/var/log/xurl
     ports:
       - "3111:3111"
     volumes:
       - .:/app
+      - /var/log/xurl:/var/log/xurl
     command: ["/bin/bash", "-c", "go run main.go"]
     depends_on:
       - db

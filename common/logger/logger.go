@@ -1,14 +1,32 @@
 package logger
 
 import (
+	"os"
+
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 var zapLogger *zap.Logger
 
 func init() {
-	zapLogger, _ = zap.NewProduction()
+	lum := &lumberjack.Logger{
+		Filename:   os.Getenv("LOG_PATH") + "/app.log",
+		MaxSize:    500, // megabytes
+		MaxAge:     7,   // days
+		MaxBackups: 3,
+	}
+	w := zap.CombineWriteSyncers(os.Stdout, zapcore.AddSync(lum))
+
+	core := zapcore.NewCore(
+		zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig()),
+		w,
+		zap.InfoLevel,
+	)
+
+	zapLogger = zap.New(core)
 }
 
 func headerFields(c *fiber.Ctx) []zap.Field {
