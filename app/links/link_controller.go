@@ -1,9 +1,13 @@
 package links
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/gofiber/fiber/v2"
+	"hungon.space/xurl/common/logger"
+)
 
 func LinkController(r fiber.Router) {
-	r.Get("/links", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, World!")
+	r.Post("/links", func(c *fiber.Ctx) error {
+		logger.Info(c, "SHORTEN_LINK")
+		return ShortenLink(c)
 	})
 }

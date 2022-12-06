@@ -30,6 +30,7 @@ services:
       - CACHE_PORT=6379
       - APP_PORT=3111
       - PREFORK=false
+      - BASE_URL=http://localhost:3111
     ports:
       - "3111:3111"
     volumes:

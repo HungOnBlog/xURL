@@ -1,6 +1,7 @@
 package links
 
 import (
+	"fmt"
 	"os"
 
 	"gorm.io/driver/postgres"
@@ -11,8 +12,9 @@ import (
 type LinkDb struct {
 }
 
-// Implement the interface migrate.DbInterface
-func (l *LinkDb) AutoMigrate() error {
+var linkRepo *gorm.DB
+
+func init() {
 	dns := dbutils.GetDbDns(
 		os.Getenv("DB_HOST"),
 		os.Getenv("DB_PORT"),
@@ -22,12 +24,34 @@ func (l *LinkDb) AutoMigrate() error {
 		os.Getenv("DB_SSL"),
 	)
 
-	db, err := gorm.Open(postgres.Open(dns), &gorm.Config{})
+	linkRepo, _ = gorm.Open(postgres.Open(dns), &gorm.Config{})
+
+}
+
+// Implement the interface migrate.DbInterface
+func (l *LinkDb) AutoMigrate() error {
+
+	err := linkRepo.AutoMigrate(&Link{})
 
 	if err != nil {
 		return err
 	}
 
-	db.AutoMigrate(&Link{})
+	fmt.Println("Link table migrated connected successfully")
 	return nil
+}
+
+func LastLinkId() (uint, error) {
+	var link Link
+	result := linkRepo.Last(&link)
+	if link == (Link{}) {
+		return 0, nil
+	}
+
+	return link.ID, result.Error
+}
+
+func CreateLink(link *Link) error {
+	result := linkRepo.Create(link)
+	return result.Error
 }

@@ -7,7 +7,7 @@ import (
 )
 
 type Link struct {
-	ID           string         `json:"id" gorm:"primaryKey"`
+	ID           uint           `json:"id" gorm:"primaryKey;autoIncrement"`
 	LinkID       string         `json:"link_id" gorm:"uniqueIndex"`
 	OriginalLink string         `json:"original_link" gorm:"not null"`
 	ShortLink    string         `json:"short_link" gorm:"not null"`

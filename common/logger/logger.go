@@ -18,7 +18,7 @@ func headerFields(c *fiber.Ctx) []zap.Field {
 		zap.String("path", c.Path()),
 		zap.String("ip", c.IP()),
 		zap.String("userAgent", c.Get("User-Agent")),
-		zap.String("requestId", c.GetReqHeaders()["requestId"]),
+		zap.String("requestId", c.Context().Value("requestId").(string)),
 	}
 }
 
