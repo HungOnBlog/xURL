@@ -5,6 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
+	xerror "hungon.space/xurl/common/error"
 	"hungon.space/xurl/common/logger"
 	"hungon.space/xurl/common/utils"
 )
@@ -23,23 +24,23 @@ func ShortenLink(c *fiber.Ctx) error {
 	linkId, error := genHashId()
 
 	if error != nil {
-		return error
+		return xerror.InternalServerError()
 	}
 
 	link := new(Link)
 	if err := c.BodyParser(link); err != nil {
-		return err
+		logger.Warn(c, "SHORTEN_LINK_REQUEST_INVALID", zap.String("error", utils.InterfaceToJsonString(xerror.LinkRequestInvalid())))
+		return xerror.LinkRequestInvalid()
 	}
 
 	link.LinkID = linkId
 	link.ApiKey = apikey
 	link.ShortLink = os.Getenv("BASE_URL") + "/" + linkId
-	link.Type = "a"
 
 	err := CreateLink(link)
 	if err != nil {
 		logger.Warn(c, "SHORTEN_LINK_FAILED", zap.Error(err))
-		return err
+		return xerror.InternalServerError()
 	}
 
 	logger.Info(c, "SHORTEN_LINK_SUCCESS", zap.String("link_info", utils.InterfaceToJsonString(link)))
