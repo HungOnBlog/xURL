@@ -2,7 +2,7 @@ package error
 
 // Link errors is error corresponding to link
 //
-// It has detail code xxx001 -> xxx099
+// It has detail code xxx100 -> xxx199
 //
 // xxx is status code
 //
@@ -18,12 +18,20 @@ package error
 //
 // xxx = 500 -> Internal Server Error
 
-// 400001 -> 400099
-// 401001 -> 401099
-// 403001 -> 403099
-// 404001 -> 404099
-// 429001 -> 429099
-// 500001 -> 500099
+// 400101 -> 400199
+func EmailInvalid() XURLError {
+	return XURLError{
+		Code:       400,
+		Message:    "Email is invalid",
+		DetailCode: 400101,
+	}
+}
+
+// 401101 -> 401199
+// 403101 -> 403199
+// 404101 -> 404199
+// 429101 -> 429199
+// 500101 -> 500199
 func InternalServerError() error {
 	return XURLError{
 		Code:       500,

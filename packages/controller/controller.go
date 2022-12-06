@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/gofiber/fiber/v2"
 	"hungon.space/xurl/app/links"
+	"hungon.space/xurl/app/users"
 )
 
 func AppController(a *fiber.App) {
@@ -10,4 +11,5 @@ func AppController(a *fiber.App) {
 
 	// Link routes
 	links.LinkController(apiV1)
+	users.UserController(apiV1)
 }

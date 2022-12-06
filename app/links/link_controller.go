@@ -14,14 +14,14 @@ func LinkController(r fiber.Router) {
 	// SHORTEN LINK
 	r.Post("/links", func(c *fiber.Ctx) error {
 		logger.Info(c, "SHORTEN_LINK")
-
+		apikey := c.Get("apikey")
 		var body Link
 		err := c.BodyParser(&body)
 		if err != nil {
 			return xerror.LinkBodyInvalid()
 		}
 
-		return linkService.ShortenLink(c, body.OriginalLink, body.ApiKey, body.Password, body.Type)
+		return linkService.ShortenLink(c, body.OriginalLink, apikey, body.Password, body.Type)
 	})
 
 	// GET LINK TYPE A
