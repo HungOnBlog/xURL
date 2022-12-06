@@ -7,12 +7,13 @@ import (
 )
 
 type Link struct {
-	ID           string         `json:"id" gorm:"primaryKey"`
+	ID           uint           `json:"id" gorm:"primaryKey;autoIncrement"`
 	LinkID       string         `json:"link_id" gorm:"uniqueIndex"`
 	OriginalLink string         `json:"original_link" gorm:"not null"`
 	ShortLink    string         `json:"short_link" gorm:"not null"`
-	ApiKey       string         `json:"api" gorm:"not null"`
+	ApiKey       string         `json:"apikey" gorm:"not null"`
 	Type         string         `json:"type" gorm:"not null"`
+	Password     string         `json:"password"`
 	CreatedAt    time.Time      `json:"created_at" gorm:"autoCreateTime"`
 	UpdatedAt    time.Time      `json:"updated_at" gorm:"autoUpdateTime"`
 	DeleteAt     gorm.DeletedAt `json:"delete_at" gorm:"index"`

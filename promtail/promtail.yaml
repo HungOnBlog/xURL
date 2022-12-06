@@ -1,0 +1,56 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+- job_name: system
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      job: varlogs
+      __path__: /var/log/xurl/*log
+  pipeline_stages:
+  - match:
+      selector: '{job="varlogs"}'
+      stages:
+      - json:
+          expressions:
+            message: msg
+            level: level
+            timestamp: ts
+            path: path
+            apikey: apikey
+            body: body
+      - timestamp:
+          source: ts
+          format: unix
+      - metrics:
+          log_lines_total:
+            type: Counter
+            description: "total number of log lines"
+            prefix: xurl_
+            max_idle_duration: 24h
+            config:
+              match_all: true
+              action: inc
+          log_bytes_total:
+            type: Counter
+            description: "total bytes of log lines"
+            prefix: xurl
+            max_idle_duration: 24h
+            config:
+              match_all: true
+              count_entry_bytes: true
+              action: add
+      - labels:
+          level: level
+          path: path
+          timestamp: ts
+          apikey: apikey

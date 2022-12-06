@@ -30,11 +30,48 @@ services:
       - CACHE_PORT=6379
       - APP_PORT=3111
       - PREFORK=false
+      - BASE_URL=http://localhost:3111
+      - LOG_PATH=/var/log/xurl
     ports:
       - "3111:3111"
     volumes:
       - .:/app
+      - /var/log/xurl:/var/log/xurl
     command: ["/bin/bash", "-c", "go run main.go"]
     depends_on:
       - db
       - cache
+  grafana:
+    image: grafana/grafana:8.3.2
+    ports:
+      - "8888:3000"
+    volumes:
+      - xurl_grafana:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
+    depends_on:
+      - app
+  loki:
+    image: grafana/loki:2.4.1
+    ports:
+      - "3334:3100"
+    volumes:
+      - ~/data/xurl/loki:/data
+    command: -config.file=/etc/loki/local-config.yaml
+    depends_on:
+      - app
+  promtail:
+    image: grafana/promtail:2.4.1
+    volumes:
+      - /var/log/xurl:/var/log/xurl
+      - ./promtail:/etc/promtail
+    command: -config.file=/etc/promtail/promtail.yaml
+    ports:
+      - "9080:9080"
+    depends_on:
+      - loki
+      - app
+
+volumes:
+  xurl_grafana:
