@@ -43,6 +43,30 @@ func LinkRequestInvalid() XURLError {
 	}
 }
 
+func LinkPasswordRequired() XURLError {
+	return XURLError{
+		Code:       400,
+		Message:    "Password is required",
+		DetailCode: 400003,
+	}
+}
+
+func LinkPasswordIncorrect() XURLError {
+	return XURLError{
+		Code:       404,
+		Message:    "Password is incorrect",
+		DetailCode: 400004,
+	}
+}
+
+func LinkBodyInvalid() XURLError {
+	return XURLError{
+		Code:       400,
+		Message:    "Invalid link body",
+		DetailCode: 400005,
+	}
+}
+
 // 401001 -> 401099
 // 403001 -> 403099
 // 404001 -> 404099

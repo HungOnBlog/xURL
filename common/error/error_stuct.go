@@ -1,5 +1,7 @@
 package error
 
+import "encoding/json"
+
 type XURLError struct {
 	Code       int    `json:"code"`
 	Message    string `json:"message"`
@@ -8,5 +10,6 @@ type XURLError struct {
 }
 
 func (e XURLError) Error() string {
-	return "Code=" + string(e.Code) + ", Message=" + e.Message + ", DetailCode=" + string(e.DetailCode)
+	str, _ := json.Marshal(e)
+	return string(str)
 }

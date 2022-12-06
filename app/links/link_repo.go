@@ -9,10 +9,10 @@ import (
 	dbutils "hungon.space/xurl/common/db_utils"
 )
 
-type LinkDb struct {
+type LinkRepo struct {
 }
 
-var linkRepo *gorm.DB
+var linkDb *gorm.DB
 
 func init() {
 	dns := dbutils.GetDbDns(
@@ -24,14 +24,17 @@ func init() {
 		os.Getenv("DB_SSL"),
 	)
 
-	linkRepo, _ = gorm.Open(postgres.Open(dns), &gorm.Config{})
+	linkDb, _ = gorm.Open(postgres.Open(dns), &gorm.Config{})
+}
 
+func (l *LinkRepo) New() *LinkRepo {
+	return &LinkRepo{}
 }
 
 // Implement the interface migrate.DbInterface
-func (l *LinkDb) AutoMigrate() error {
+func (l *LinkRepo) AutoMigrate() error {
 
-	err := linkRepo.AutoMigrate(&Link{})
+	err := linkDb.AutoMigrate(&Link{})
 
 	if err != nil {
 		return err
@@ -41,17 +44,33 @@ func (l *LinkDb) AutoMigrate() error {
 	return nil
 }
 
-func LastLinkId() (uint, error) {
-	var link Link
-	result := linkRepo.Last(&link)
-	if link == (Link{}) {
-		return 0, nil
-	}
-
-	return link.ID, result.Error
+func (l *LinkRepo) FindByID(id uint, des *Link) error {
+	return linkDb.First(des, "id = ?", id).Error
 }
 
-func CreateLink(link *Link) error {
-	result := linkRepo.Create(link)
+func (l *LinkRepo) FindBySelfID(id string, des *Link) error {
+	return linkDb.First(des, "link_id = ?", id).Error
+}
+
+func (l *LinkRepo) CreateOne(data *Link) error {
+	result := linkDb.Create(data)
 	return result.Error
+}
+
+func (l *LinkRepo) UpdateOne(data *Link) error {
+	return linkDb.Save(data).Error
+}
+
+func (l *LinkRepo) DeleteOne(selfId string) error {
+	return linkDb.Delete(&Link{}, "link_id = ?", selfId).Error
+}
+
+func (l *LinkRepo) LastId() (uint, error) {
+	var lastId Link
+	err := linkDb.Last(&lastId).Error
+	if err != nil {
+		return 0, err
+	}
+
+	return lastId.ID, nil
 }

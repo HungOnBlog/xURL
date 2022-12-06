@@ -4,7 +4,7 @@ import "hungon.space/xurl/app/links"
 
 func AppAutoMigration() {
 	dbs := []DbInterface{
-		&links.LinkDb{},
+		&links.LinkRepo{},
 	}
 
 	for _, db := range dbs {

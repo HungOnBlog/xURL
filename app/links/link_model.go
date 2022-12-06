@@ -13,6 +13,7 @@ type Link struct {
 	ShortLink    string         `json:"short_link" gorm:"not null"`
 	ApiKey       string         `json:"apikey" gorm:"not null"`
 	Type         string         `json:"type" gorm:"not null"`
+	Password     string         `json:"password"`
 	CreatedAt    time.Time      `json:"created_at" gorm:"autoCreateTime"`
 	UpdatedAt    time.Time      `json:"updated_at" gorm:"autoUpdateTime"`
 	DeleteAt     gorm.DeletedAt `json:"delete_at" gorm:"index"`
