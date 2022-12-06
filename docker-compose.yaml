@@ -67,6 +67,8 @@ services:
       - /var/log/xurl:/var/log/xurl
       - ./promtail:/etc/promtail
     command: -config.file=/etc/promtail/promtail.yaml
+    ports:
+      - "9080:9080"
     depends_on:
       - loki
       - app
