@@ -80,7 +80,6 @@ func (u *UserRepo) FindByEmail(email string, des *User) error {
 	return userDb.First(des, "email = ?", email).Error
 }
 
-// Return the user with the given apikey and expired_date > now()
 func (u *UserRepo) FindByApiKey(apikey string, des *User) error {
-	return userDb.First(des, "apikey = ? AND expired_date", apikey).Error
+	return userDb.First(des, "api_key = ?", apikey).Error
 }

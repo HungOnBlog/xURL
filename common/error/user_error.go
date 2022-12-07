@@ -38,5 +38,13 @@ func PasswordInvalid() XURLError {
 // 401201 -> 401299
 // 403201 -> 403299
 // 404201 -> 404299
+func UserWithApikeyNotFound() XURLError {
+	return XURLError{
+		Code:       404,
+		Message:    "User with apikey not found",
+		DetailCode: 404201,
+	}
+}
+
 // 429201 -> 429299
 // 500201 -> 500299

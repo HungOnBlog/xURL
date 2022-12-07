@@ -100,3 +100,13 @@ func (u *UserService) CreateUser(c *fiber.Ctx, userType string, email string, na
 	logger.Info(c, "CREATE_USER_SUCCESS", zap.String("data", utils.InterfaceToJsonString(user)))
 	return c.JSON(user)
 }
+
+func (u *UserService) GetUserByApikey(c *fiber.Ctx, apikey string) (*User, error) {
+	var user User
+	err := u.UserRepo.FindByApiKey(apikey, &user)
+	if err != nil {
+		logger.Warn(c, "GET_USER_ERROR", zap.String("error", err.Error()))
+		return nil, err
+	}
+	return &user, nil
+}
