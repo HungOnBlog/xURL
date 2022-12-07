@@ -20,6 +20,6 @@ func UserController(r fiber.Router) {
 			return xerror.UserBodyInvalid()
 		}
 
-		return userService.CreateUser(c, user.Type, user.Email, user.Name)
+		return userService.CreateUser(c, user.Type, user.Email, user.Name, user.Password)
 	})
 }

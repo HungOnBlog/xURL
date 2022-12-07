@@ -27,6 +27,14 @@ func UserBodyInvalid() XURLError {
 	}
 }
 
+func PasswordInvalid() XURLError {
+	return XURLError{
+		Code:       400,
+		Message:    "Invalid password. Password must be at least 9 characters long.",
+		DetailCode: 400202,
+	}
+}
+
 // 401201 -> 401299
 // 403201 -> 403299
 // 404201 -> 404299
