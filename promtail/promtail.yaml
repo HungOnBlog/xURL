@@ -54,3 +54,4 @@ scrape_configs:
           path: path
           timestamp: ts
           apikey: apikey
+          message: message
