@@ -1,7 +1,6 @@
 package links
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/gofiber/fiber/v2"
@@ -35,7 +34,6 @@ func (l *LinkService) genLinkId() string {
 
 func (l *LinkService) ShortenLink(c *fiber.Ctx, originalLink string, apiKey string, password string, linkType string) error {
 	linkId := l.genLinkId()
-	fmt.Println(linkId)
 	link := Link{
 		LinkID:       linkId,
 		OriginalLink: originalLink,

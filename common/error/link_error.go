@@ -79,4 +79,20 @@ func LinkNotFound() XURLError {
 }
 
 // 429001 -> 429099
+func PasswordLimitReached() XURLError {
+	return XURLError{
+		Code:       429,
+		Message:    "Password limit reached",
+		DetailCode: 429001,
+	}
+}
+
+func TrackingLimitReached() XURLError {
+	return XURLError{
+		Code:       429,
+		Message:    "Tracking limit reached",
+		DetailCode: 429002,
+	}
+}
+
 // 500001 -> 500099

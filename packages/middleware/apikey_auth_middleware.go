@@ -33,7 +33,7 @@ func ApplyApikeyAuthMiddleware(a *fiber.App) {
 		}
 
 		userString, _ := json.Marshal(user)
-		c.Set("user", string(userString))
+		c.Request().Header.Set("user", string(userString))
 
 		return c.Next()
 	})
