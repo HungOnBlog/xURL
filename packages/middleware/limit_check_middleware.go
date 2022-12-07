@@ -8,8 +8,10 @@ import (
 	"go.uber.org/zap"
 	"hungon.space/xurl/app/links"
 	"hungon.space/xurl/app/users"
+	"hungon.space/xurl/common/cache"
 	xerror "hungon.space/xurl/common/error"
 	"hungon.space/xurl/common/logger"
+	"hungon.space/xurl/common/utils"
 )
 
 func validatorChain(validators []func(*fiber.Ctx, *links.Link, *users.User) error, c *fiber.Ctx, l *links.Link, u *users.User) error {
@@ -77,10 +79,32 @@ func shortenTypeTpValidator(c *fiber.Ctx, l *links.Link, u *users.User) error {
 	return nil
 }
 
+func updateLimit(c *fiber.Ctx, l *links.Link, u *users.User) {
+	apikey := c.Get("apikey")
+	cacheRepo := cache.RedisRepo{}
+
+	if l.Type == "p" {
+		u.LimitPassword = u.LimitPassword - 1
+	}
+
+	if l.Type == "t" {
+		u.LimitTracking = u.LimitTracking - 1
+	}
+
+	if l.Type == "tp" {
+		u.LimitTracking = u.LimitTracking - 1
+		u.LimitPassword = u.LimitPassword - 1
+	}
+
+	userString, _ := json.Marshal(u)
+	logger.Info(c, "UPDATE_LIMIT", zap.String("limit", string(userString)))
+	cacheRepo.Set(apikey, userString)
+}
+
 func ApplyLimitCheckMiddleware(a *fiber.App) {
 	a.Use(func(c *fiber.Ctx) error {
 		// Skip for /users paths
-		if c.Path() == "/users" || c.Path() == "/users/" {
+		if utils.StringInclude(c.Path(), "/users") {
 			return c.Next()
 		}
 
@@ -111,6 +135,7 @@ func ApplyLimitCheckMiddleware(a *fiber.App) {
 		}
 
 		logger.Info(c, "LIMIT_CHECK_PASSED", zap.String("limit", userString))
+		updateLimit(c, &body, user)
 		return c.Next()
 	})
 	fmt.Println("Limit check middleware applied")
