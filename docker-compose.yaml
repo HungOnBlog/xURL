@@ -32,6 +32,12 @@ services:
       - PREFORK=false
       - BASE_URL=http://localhost:3111
       - LOG_PATH=/var/log/xurl
+      - FREE_PASSWORD=9
+      - FREE_TRACKING=3
+      - FREE_SLUG=6
+      - PRO_PASSWORD=99
+      - PRO_TRACKING-99
+      - PRO_SLUG=99
     ports:
       - "3111:3111"
     volumes:

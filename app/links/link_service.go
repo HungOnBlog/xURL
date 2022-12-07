@@ -61,27 +61,30 @@ func (l *LinkService) GetLinkTypeA(c *fiber.Ctx, linkId string) error {
 	err := l.linkRepo.FindBySelfID(linkId, &link)
 
 	if err != nil {
-		return xerror.LinkNotFound()
+		logger.Warn(c, "GET_LINK_ERROR", zap.String("error", err.Error()))
+		return c.JSON(xerror.LinkNotFound())
 	}
 
-	return c.Redirect(link.OriginalLink)
+	return c.JSON(link)
 }
 
 func (l *LinkService) GetLinkTypeP(c *fiber.Ctx, linkId string, password string) error {
 	if password == "" {
-		return xerror.LinkPasswordRequired()
+		return c.JSON(xerror.LinkPasswordRequired())
 	}
 
 	var link Link
 	err := l.linkRepo.FindBySelfID(linkId, &link)
 
 	if err != nil {
-		return xerror.LinkNotFound()
+		logger.Warn(c, "GET_LINK_ERROR", zap.String("error", err.Error()))
+		return c.JSON(xerror.LinkNotFound())
 	}
 
 	if link.Password != password {
-		return xerror.LinkPasswordIncorrect()
+		logger.Warn(c, "GET_LINK_ERROR", zap.String("error", xerror.LinkPasswordIncorrect().Error()))
+		return c.JSON(xerror.LinkPasswordIncorrect())
 	}
 
-	return c.Redirect(link.OriginalLink)
+	return c.JSON(link)
 }
